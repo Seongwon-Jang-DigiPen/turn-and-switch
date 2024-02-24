@@ -10,13 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64dc22dbfa46248c599bb29a4e77c49f, type: 3}
-  m_Name: NewScriptabletest
+  m_Name: bow
   m_EditorClassIdentifier: 
   Damage: 31
   Weight: 45
   DefaultImage: {fileID: 0}
-  WpRange:
-  - Value: 00010100010101000000000000000000000000000000000000
-  - Value: 00000000000000000000000000000000000000000000000000
-  - Value: 00000000000000000000000000000000000000000000000000
-  - Value: 00000000000000000000000000000000000000000000000000
+  WpRange: []

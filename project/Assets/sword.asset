@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64dc22dbfa46248c599bb29a4e77c49f, type: 3}
+  m_Name: sword
+  m_EditorClassIdentifier: 
+  Damage: 50
+  Weight: 45
+  DefaultImage: {fileID: 0}
+  WpRange:
+  - ArrayValue: 00010000000000000000000000000000000000010000000001
+  - ArrayValue: 00000000000000000000000001000000000000000000010000
+  - ArrayValue: 00000001000000000000000000000000000000000000000000
+  - ArrayValue: 00000100000000000000000000000000000000000100000000
+  test: 0001000101
+  arange: 0400000003000000070000000600000008000000

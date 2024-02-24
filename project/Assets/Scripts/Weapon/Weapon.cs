@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.PixelFantasy.PixelMonsters.Common.Scripts;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 
@@ -11,22 +13,24 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private WeaponLocation _location = WeaponLocation.Left;
     public WeaponLocation Location { get { return _location; } set { _location = value; } }
+
+    [SerializeField]
     private float _damage;
     public float Damage { get { return _damage; } set { _damage = value; } }
     private float _weight;
     public float Weight { get { return _weight; } set { _weight = value; } }
+
+    public bool AttackDone = false;
 
     [Range(1f, 20f)]
     public float turnSpeed = 7;
 
     public void Rotate(RotateDirection rd)
     {
+        AttackDone = false;
         _prevLocation = _location;
         if (info != null)
         {
-            // Debug.Log($"Rotate: {rd}");
-            // Debug.Log($"Location: {_location}");
-            // Debug.Log($"AttackRange: {Def.GetAttackRange[_location][rd]}");
             bool[] attackList = GetAttackRange();
             for (int i = 0; i < attackList.Length; ++i)
             {
@@ -42,6 +46,13 @@ public class Weapon : MonoBehaviour
         void Attack(int tileNum)
         {
             AttackTileManager.Instance.TileList[tileNum].ChangeColor();
+            foreach (var mon in TDMonsterManager.Instance.Monsters)
+            {
+                if (mon.TileNum == tileNum)
+                {
+                    mon.Hitted(Damage);
+                }
+            }
         }
         void ChangeLocation()
         {
@@ -59,24 +70,15 @@ public class Weapon : MonoBehaviour
 
     private void Update()
     {
-        //transform.position = WeaponManager.WeaponLocationVec2[(int)_location];
-        // Vector2 from = WeaponManager.WeaponLocationVec2[(int)_prevLocation];
-        // float fromAngle = Mathf.Atan2(from.y, from.x); //원래는 플레이어의 위치값만큼 빼야 함
-        // Vector2 to = WeaponManager.WeaponLocationVec2[(int)_location];
-        // float toAngle = Mathf.Atan2(to.y, to.x);
+        float angle = Def.WeaponLocationDegree[(int)_location];
+        float currAngle = Mathf.Rad2Deg * Mathf.Atan2(transform.position.y, transform.position.x); ;
 
-        float angle = Def.WeaponLocationDegree[(int)_location]; //Mathf.Lerp(WeaponManager.WeaponLocationDegree[(int)_prevLocation], WeaponManager.WeaponLocationDegree[(int)_location], rotateTime);
-        float prevAngle = Mathf.Rad2Deg * Mathf.Atan2(transform.position.y, transform.position.x); ;
-        //Vector3 newPos = Quaternion.AngleAxis(angle, Vector3.forward) * Vector3.right;
+        Vector3 newPos = Quaternion.Lerp(Quaternion.AngleAxis(currAngle, Vector3.forward), Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * turnSpeed) * new Vector3(WeaponManager.disFromPlayer, 0, 0);
 
-        Vector3 newPos = Quaternion.Lerp(Quaternion.AngleAxis(prevAngle, Vector3.forward), Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * turnSpeed) * new Vector3(WeaponManager.disFromPlayer, 0, 0);
-
+        if ((transform.position - newPos).magnitude < 0.001f)
+        {
+            AttackDone = true;
+        }
         transform.position = newPos;
-
-    }
-
-    public bool Rotatable()
-    {
-        return true;
     }
 }

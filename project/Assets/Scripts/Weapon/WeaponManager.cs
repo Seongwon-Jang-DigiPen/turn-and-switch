@@ -10,6 +10,24 @@ public class WeaponManager : MonoBehaviour
     [SerializeField]
     Weapon[] weapons = new Weapon[(int)WeaponLocation.Count];
 
+    public bool IsAttackDone
+    {
+        get
+        {
+            for (int i = 0; i < (int)WeaponLocation.Count; ++i)
+            {
+                if (weapons[i] != null)
+                {
+                    if (weapons[i].AttackDone == false)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
     [Range(0, 2f)]
     public float dfp = 1f;
 
@@ -30,18 +48,9 @@ public class WeaponManager : MonoBehaviour
     private void Update()
     {
         disFromPlayer = dfp;
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            Rotate(RotateDirection.Clockwise);
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            Rotate(RotateDirection.Counterclockwise);
-        }
     }
     public void Rotate(RotateDirection rd)
     {
-
         RotateWeapon();
         RotateArray();
 
@@ -80,7 +89,7 @@ public class WeaponManager : MonoBehaviour
     {
         foreach (Weapon weapon in weapons)
         {
-            if (weapon != null && weapon.Rotatable() == false)
+            if (weapon != null)
             {
                 return false;
             }

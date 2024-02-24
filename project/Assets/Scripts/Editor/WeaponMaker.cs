@@ -125,8 +125,8 @@ namespace MyEditor
                         {
                             for (int x = 0; x < XSize; ++x)
                             {
+                                bool prevData = info.WpRange[(int)dir][y * XSize + x];
                                 info.WpRange[(int)dir][y * XSize + x] = EditorGUILayout.Toggle(info.WpRange[(int)dir][y * XSize + x], GUILayout.MinHeight(15), GUILayout.MinWidth(15), GUILayout.MaxWidth(20), GUILayout.MaxHeight(20));
-
                             }
                         }
                     }
