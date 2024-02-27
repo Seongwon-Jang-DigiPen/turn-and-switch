@@ -1,99 +1,94 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
 public class WeaponManager : MonoBehaviour
 {
 
-    [SerializeField]
-    Weapon[] weapons = new Weapon[(int)WeaponLocation.Count];
+    private static WeaponManager _instance;
+    public static WeaponManager Instance { get { return _instance; } }
 
-    public bool IsAttackDone
+    [SerializeField] private float _maxVelocity = 200;
+    [SerializeField] private float acceleration = 180;
+    //drag only concered when player isn't rotate;
+    [SerializeField] private float _drag = 5;
+    [SerializeField] Weapon[] weapons = new Weapon[(int)WeaponLocation.Count];
+    private RotateDirection _prevRotateDirection = RotateDirection.Clockwise;
+    private Rigidbody2D _rb;
+    public bool IsRotate = false;
+    public bool IsReverseRotate = false;
+
+    public bool IsShoot
     {
         get
         {
-            for (int i = 0; i < (int)WeaponLocation.Count; ++i)
+            foreach (Weapon wp in weapons)
             {
-                if (weapons[i] != null)
-                {
-                    if (weapons[i].AttackDone == false)
-                    {
-                        return false;
-                    }
-                }
+                if (wp.IsShoot == true) return true;
             }
-            return true;
+            return false;
         }
     }
 
-    [Range(0, 2f)]
-    public float dfp = 1f;
-
-    public static float disFromPlayer = 1f;
-
+    public float dis = 1;
     private void Start()
     {
-        for (int i = 0; i < (int)WeaponLocation.Count; ++i)
+        if (_instance != null)
         {
-            if (weapons[i] != null)
-            {
-                weapons[i].Location = (WeaponLocation)i;
-                weapons[i].transform.position = Def.WeaponLocationVec2[i];
-            }
+            Destroy(this.gameObject);
+            return;
         }
+        _instance = this;
+        _rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        disFromPlayer = dfp;
+        if (IsRotate == false || IsReverseRotate == true)
+        {
+            _rb.angularDrag = _drag;
+        }
+        else
+        {
+
+            _rb.angularDrag = 0;
+        }
     }
+
+    public void ShootWeapon()
+    {
+        foreach (Weapon wp in weapons)
+        {
+            wp.Shoot();
+        }
+    }
+
     public void Rotate(RotateDirection rd)
     {
         RotateWeapon();
-        RotateArray();
 
         void RotateWeapon()
         {
-            foreach (Weapon weapon in weapons)
-            {
-                weapon?.Rotate(rd);
-            }
-        }
+            IsReverseRotate = (_rb.angularVelocity > 0 && GetSign(rd) < 0) || (_rb.angularVelocity < 0 && GetSign(rd) > 0);
+            _rb.AddTorque(acceleration * Time.deltaTime * GetSign(rd), ForceMode2D.Force);
 
-        void RotateArray()
-        {
-            if (rd == RotateDirection.Clockwise)
+            if (GetSign(rd) > 0)
             {
-                Weapon downWeapon = weapons[(int)WeaponLocation.Down]; // 3
-                for (int i = (int)WeaponLocation.Count - 1; i > 0; --i)
-                {
-                    weapons[i] = weapons[i - 1];
-                }
-                weapons[(int)WeaponLocation.Left] = downWeapon;
+                _rb.angularVelocity = Mathf.Min(_rb.angularVelocity, _maxVelocity);
             }
             else
             {
-                Weapon leftWeapon = weapons[(int)WeaponLocation.Left];
-                for (int i = 0; i < (int)WeaponLocation.Count - 1; ++i)
-                {
-                    weapons[i] = weapons[i + 1];
-                }
-                weapons[(int)WeaponLocation.Down] = leftWeapon;
+                _rb.angularVelocity = Mathf.Max(_rb.angularVelocity, -_maxVelocity);
             }
         }
     }
 
-    public bool Rotatable()
+    public int GetSign(RotateDirection rd)
     {
-        foreach (Weapon weapon in weapons)
-        {
-            if (weapon != null)
-            {
-                return false;
-            }
-        }
-        return true;
+        return (rd == RotateDirection.Clockwise) ? -1 : 1;
     }
 }
