@@ -19,8 +19,6 @@ public class TDGameManager : MonoBehaviour
         if (_instance != null) { Destroy(this.gameObject); return; }
         _instance = this;
 
-
-
         _weaponManager = FindAnyObjectByType<WeaponManager>();
     }
 
@@ -39,27 +37,31 @@ public class TDGameManager : MonoBehaviour
                 _weaponManager.Rotate(RotateDirection.Counterclockwise);
                 StartCoroutine(test());
             }
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _weaponManager.Attack();
+            }
         }
 
     }
     IEnumerator test()
     {
-        CanRotate = false;
+        // CanRotate = false;
 
-        while (_weaponManager.IsAttackDone == false)
-            yield return null;
+        // while (_weaponManager.IsAttackDone == false)
+        yield return null;
 
 
-        foreach (var mon in TDMonsterManager.Instance.Monsters)
-        {
-            mon.Move();
-        }
+        // foreach (var mon in TDMonsterManager.Instance.Monsters)
+        // {
+        //     mon.Move();
+        // }
 
-        while (TDMonsterManager.Instance.IsActionDone() == false)
-            yield return null;
+        // while (TDMonsterManager.Instance.IsActionDone() == false)
+        //     yield return null;
 
-        _turnCount++;
-        CanRotate = true;
+        // _turnCount++;
+        // CanRotate = true;
     }
 
 

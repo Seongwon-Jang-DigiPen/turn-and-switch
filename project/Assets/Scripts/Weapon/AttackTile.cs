@@ -6,29 +6,26 @@ using UnityEngine;
 public class AttackTile : MonoBehaviour
 {
     private SpriteRenderer _renderer;
+    private Color color;
 
     AnimFloat animT = new AnimFloat(0);
     private void Start()
     {
         _renderer = GetComponent<SpriteRenderer>();
-        animT.target = 0;
+        animT.value = 0;
+        animT.target = 1;
+        animT.speed = 1;
     }
 
     private void Update()
     {
-        _renderer.color = Color.Lerp(Color.white, Color.red, animT.value);
+        _renderer.color = Color.Lerp(color, Color.white, Mathf.Max(0f, animT.value));
     }
 
-    public void ChangeColor()
+    public void ChangeColor(Color c)
     {
-        animT.value = 1;
-        animT.target = 0;
-        //_renderer.color = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
+        animT.value = 0;
+        animT.target = 1;
+        color = c;
     }
-
-    public void ChangeColor(Color32 color)
-    {
-        _renderer.color = color;
-    }
-
 }

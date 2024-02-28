@@ -8,47 +8,35 @@ public class WeaponManager : MonoBehaviour
 {
 
     [SerializeField]
-    Weapon[] weapons = new Weapon[(int)WeaponLocation.Count];
+    Weapon[] _weapons = new Weapon[(int)WeaponLocation.Count];
 
-    public bool IsAttackDone
-    {
-        get
-        {
-            for (int i = 0; i < (int)WeaponLocation.Count; ++i)
-            {
-                if (weapons[i] != null)
-                {
-                    if (weapons[i].AttackDone == false)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-    }
-
-    [Range(0, 2f)]
-    public float dfp = 1f;
-
-    public static float disFromPlayer = 1f;
+    [Range(5f, 15f)]
+    public static float WeaponTurnSpeed = 10f;
 
     private void Start()
     {
         for (int i = 0; i < (int)WeaponLocation.Count; ++i)
         {
-            if (weapons[i] != null)
+            if (_weapons[i] != null)
             {
-                weapons[i].Location = (WeaponLocation)i;
-                weapons[i].transform.position = Def.WeaponLocationVec2[i];
+                _weapons[i].Location = (WeaponLocation)i;
+                _weapons[i].transform.position = Def.WeaponLocationVec2[i];
             }
         }
     }
 
     private void Update()
     {
-        disFromPlayer = dfp;
     }
+
+    public void Attack()
+    {
+        foreach (Weapon wp in _weapons)
+        {
+            wp?.Attack();
+        }
+    }
+
     public void Rotate(RotateDirection rd)
     {
         RotateWeapon();
@@ -56,7 +44,7 @@ public class WeaponManager : MonoBehaviour
 
         void RotateWeapon()
         {
-            foreach (Weapon weapon in weapons)
+            foreach (Weapon weapon in _weapons)
             {
                 weapon?.Rotate(rd);
             }
@@ -66,34 +54,47 @@ public class WeaponManager : MonoBehaviour
         {
             if (rd == RotateDirection.Clockwise)
             {
-                Weapon downWeapon = weapons[(int)WeaponLocation.Down]; // 3
+                Weapon lastWeapon = _weapons[(int)WeaponLocation.Count - 1]; // 3
                 for (int i = (int)WeaponLocation.Count - 1; i > 0; --i)
                 {
-                    weapons[i] = weapons[i - 1];
+                    _weapons[i] = _weapons[i - 1];
                 }
-                weapons[(int)WeaponLocation.Left] = downWeapon;
+                _weapons[0] = lastWeapon;
             }
             else
             {
-                Weapon leftWeapon = weapons[(int)WeaponLocation.Left];
+                Weapon firstWeapon = _weapons[0];
                 for (int i = 0; i < (int)WeaponLocation.Count - 1; ++i)
                 {
-                    weapons[i] = weapons[i + 1];
+                    _weapons[i] = _weapons[i + 1];
                 }
-                weapons[(int)WeaponLocation.Down] = leftWeapon;
+                _weapons[(int)WeaponLocation.Count - 1] = firstWeapon;
             }
         }
     }
 
-    public bool Rotatable()
+    // public bool Rotatable()
+    // {
+    //     foreach (Weapon weapon in _weapons)
+    //     {
+    //         if (weapon != null)
+    //         {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
+
+    public bool Attackable()
     {
-        foreach (Weapon weapon in weapons)
+        foreach (Weapon weapon in _weapons)
         {
-            if (weapon != null)
+            if (weapon?.Attackable == false)
             {
                 return false;
             }
         }
         return true;
     }
+
 }

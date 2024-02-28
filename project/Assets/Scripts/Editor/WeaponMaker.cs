@@ -90,29 +90,11 @@ namespace MyEditor
         {
             using (var rangeScope = new EditorGUILayout.VerticalScope())
             {
-                using (var secondFloorScope = new EditorGUILayout.HorizontalScope())
-                {
-                    DrawWeaponRange(weaponInfo, WeaponRangeDir.LeftUp);
-                    GUILayout.Box("", GUILayout.Width(10), GUILayout.Height(100));
-                    EditorGUILayout.Space(15);
-                    DrawWeaponRange(weaponInfo, WeaponRangeDir.RightUp);
-                }
-
-                EditorGUILayout.Space(5);
-                GUILayout.Box("", GUILayout.Width(20000), GUILayout.Height(10));
-                EditorGUILayout.Space(5);
-
-                using (var firstFloorScope = new EditorGUILayout.HorizontalScope())
-                {
-                    DrawWeaponRange(weaponInfo, WeaponRangeDir.LeftDown);
-                    GUILayout.Box("", GUILayout.Width(10), GUILayout.Height(100));
-                    EditorGUILayout.Space(15);
-                    DrawWeaponRange(weaponInfo, WeaponRangeDir.RightDown);
-                }
+                DrawWeaponRange(weaponInfo);
             }
 
 
-            void DrawWeaponRange(WeaponInfo info, WeaponRangeDir dir)
+            void DrawWeaponRange(WeaponInfo info)
             {
 
                 GUILayout.Width(100); GUILayout.Height(10);
@@ -125,8 +107,7 @@ namespace MyEditor
                         {
                             for (int x = 0; x < XSize; ++x)
                             {
-                                bool prevData = info.WpRange[(int)dir][y * XSize + x];
-                                info.WpRange[(int)dir][y * XSize + x] = EditorGUILayout.Toggle(info.WpRange[(int)dir][y * XSize + x], GUILayout.MinHeight(15), GUILayout.MinWidth(15), GUILayout.MaxWidth(20), GUILayout.MaxHeight(20));
+                                info.WpRange[y * XSize + x] = EditorGUILayout.Toggle(info.WpRange[y * XSize + x], GUILayout.MinHeight(15), GUILayout.MinWidth(15), GUILayout.MaxWidth(20), GUILayout.MaxHeight(20));
                             }
                         }
                     }

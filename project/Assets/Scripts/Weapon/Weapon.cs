@@ -20,40 +20,17 @@ public class Weapon : MonoBehaviour
     private float _weight;
     public float Weight { get { return _weight; } set { _weight = value; } }
 
-    public bool AttackDone = false;
+    public Color color;
 
     [Range(1f, 20f)]
-    public float turnSpeed = 7;
-
+    public float turnSpeed = WeaponManager.WeaponTurnSpeed;
+    public bool Attackable = false;
     public void Rotate(RotateDirection rd)
     {
-        AttackDone = false;
         _prevLocation = _location;
-        if (info != null)
-        {
-            bool[] attackList = GetAttackRange();
-            for (int i = 0; i < attackList.Length; ++i)
-            {
-                if (attackList[i]) { Attack(i); }
-            }
-        }
+
         ChangeLocation();
 
-        bool[] GetAttackRange()
-        {
-            return info.WpRange[(int)Def.GetAttackRange[_location][rd]].ArrayValue;
-        }
-        void Attack(int tileNum)
-        {
-            AttackTileManager.Instance.TileList[tileNum].ChangeColor();
-            foreach (var mon in TDMonsterManager.Instance.Monsters)
-            {
-                if (mon.TileNum == tileNum)
-                {
-                    mon.Hitted(Damage);
-                }
-            }
-        }
         void ChangeLocation()
         {
             if (rd == RotateDirection.Clockwise)
@@ -67,18 +44,37 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    public void Attack()
+    {
+        bool[] range = info?.WpRange?.GetRange(Location);
+        if (range != null)
+        {
+            for (int i = 0; i < range.Length; ++i)
+            {
+                if (range[i]) { TileCheck(i); }
+            }
+        }
+
+        void TileCheck(int tileNum)
+        {
+            AttackTileManager.Instance.TileList[tileNum].ChangeColor(color);
+            foreach (var mon in TDMonsterManager.Instance.Monsters)
+            {
+                if (mon.TileNum == tileNum)
+                {
+                    mon.Hitted(Damage);
+                }
+            }
+        }
+    }
 
     private void Update()
     {
         float angle = Def.WeaponLocationDegree[(int)_location];
         float currAngle = Mathf.Rad2Deg * Mathf.Atan2(transform.position.y, transform.position.x); ;
 
-        Vector3 newPos = Quaternion.Lerp(Quaternion.AngleAxis(currAngle, Vector3.forward), Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * turnSpeed) * new Vector3(WeaponManager.disFromPlayer, 0, 0);
+        Vector3 newPos = Quaternion.Lerp(Quaternion.AngleAxis(currAngle, Vector3.forward), Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * turnSpeed) * new Vector3(Def.WeaponPlayerDistance, 0, 0);
 
-        if ((transform.position - newPos).magnitude < 0.001f)
-        {
-            AttackDone = true;
-        }
         transform.position = newPos;
     }
 }
