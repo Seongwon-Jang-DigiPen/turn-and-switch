@@ -4,13 +4,11 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using System;
-using Unity.VisualScripting;
 
 public class TDMonster : CharacterBase
 {
     Vector2 prevPos;
     Vector2 CurrPos;
-    public int StartFieldTime = 0;
     private int _aiListIdx = 0;
     public float Damage = 5;
     public MonsterAction[] AIList;
@@ -46,7 +44,7 @@ public class TDMonster : CharacterBase
     }
     public void Move()
     {
-        if (TDGameManager.Instance.TurnCount < StartFieldTime || AIList.Length <= 0)
+        if (AIList.Length <= 0)
         {
             return;
         }

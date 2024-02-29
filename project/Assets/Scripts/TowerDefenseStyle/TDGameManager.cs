@@ -5,6 +5,11 @@ using UnityEngine;
 //battleManagement
 public class TDGameManager : MonoBehaviour
 {
+    public enum ActionList
+    {
+        TurnRight, TurnLeft, Attack
+    }
+
     static private TDGameManager _instance;
     static public TDGameManager Instance { get { return _instance; } }
 
@@ -22,24 +27,48 @@ public class TDGameManager : MonoBehaviour
         _weaponManager = FindAnyObjectByType<WeaponManager>();
     }
 
+    private void PlayerAction(ActionList action)
+    {
+        switch (action)
+        {
+            case ActionList.TurnRight:
+                _weaponManager.Rotate(RotateDirection.Clockwise);
+                break;
+            case ActionList.TurnLeft:
+                _weaponManager.Rotate(RotateDirection.Counterclockwise);
+                break;
+            case ActionList.Attack:
+                _weaponManager.Attack();
+                break;
+        }
+        foreach (var mon in TDMonsterManager.Instance.Monsters)
+        {
+            mon.Move();
+        }
+
+        _turnCount++;
+        if (_turnCount % 2 == 0)
+        {
+            TDMonsterGenerator.Instance.Generate();
+        }
+
+    }
+
     private void Update()
     {
         if (CanRotate == true)
         {
             if (Input.GetKeyDown(KeyCode.D))
             {
-                _weaponManager.Rotate(RotateDirection.Clockwise);
-                StartCoroutine(test());
-
+                PlayerAction(ActionList.TurnRight);
             }
             else if (Input.GetKeyDown(KeyCode.A))
             {
-                _weaponManager.Rotate(RotateDirection.Counterclockwise);
-                StartCoroutine(test());
+                PlayerAction(ActionList.TurnLeft);
             }
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                _weaponManager.Attack();
+                PlayerAction(ActionList.Attack);
             }
         }
 

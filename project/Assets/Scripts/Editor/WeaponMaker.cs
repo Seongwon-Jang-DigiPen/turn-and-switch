@@ -107,7 +107,12 @@ namespace MyEditor
                         {
                             for (int x = 0; x < XSize; ++x)
                             {
+                                bool temp = info.WpRange[y * XSize + x];
                                 info.WpRange[y * XSize + x] = EditorGUILayout.Toggle(info.WpRange[y * XSize + x], GUILayout.MinHeight(15), GUILayout.MinWidth(15), GUILayout.MaxWidth(20), GUILayout.MaxHeight(20));
+                                if (info.WpRange[y * XSize + x] != temp)
+                                {
+                                    EditorUtility.SetDirty(info);
+                                }
                             }
                         }
                     }

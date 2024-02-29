@@ -15,4 +15,5 @@ MonoBehaviour:
   Damage: 31
   Weight: 45
   DefaultImage: {fileID: 0}
-  WpRange: []
+  WpRange:
+    ArrayValue: 00000000000000000000000000000000000000000001000100
