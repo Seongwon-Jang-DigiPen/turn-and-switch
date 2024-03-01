@@ -7,14 +7,24 @@ using UnityEngine;
 public class WeaponManager : MonoBehaviour
 {
 
+    private static WeaponManager _instance;
+    public static WeaponManager Instance { get { return _instance; } }
     [SerializeField]
     Weapon[] _weapons = new Weapon[(int)WeaponLocation.Count];
 
+
+
     [Range(5f, 15f)]
-    public static float WeaponTurnSpeed = 10f;
+    public static float WeaponTurnSpeed = 5f;
 
     private void Start()
     {
+        if (_instance != null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        _instance = this;
         for (int i = 0; i < (int)WeaponLocation.Count; ++i)
         {
             if (_weapons[i] != null)
@@ -22,18 +32,6 @@ public class WeaponManager : MonoBehaviour
                 _weapons[i].Location = (WeaponLocation)i;
                 _weapons[i].transform.position = Def.WeaponLocationVec2[i];
             }
-        }
-    }
-
-    private void Update()
-    {
-    }
-
-    public void Attack()
-    {
-        foreach (Weapon wp in _weapons)
-        {
-            wp?.Attack();
         }
     }
 
@@ -73,23 +71,11 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    // public bool Rotatable()
-    // {
-    //     foreach (Weapon weapon in _weapons)
-    //     {
-    //         if (weapon != null)
-    //         {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
-
-    public bool Attackable()
+    public bool IsRotateable()
     {
-        foreach (Weapon weapon in _weapons)
+        for (int i = 0; i < _weapons.Length; ++i)
         {
-            if (weapon?.Attackable == false)
+            if (_weapons[i] != null && _weapons[i].IsRotateDone == false)
             {
                 return false;
             }
@@ -97,4 +83,13 @@ public class WeaponManager : MonoBehaviour
         return true;
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(Vector3.zero, 1);
+
+        for (int i = 0; i < 8; ++i)
+        {
+            Gizmos.DrawLine(Vector3.zero, Quaternion.AngleAxis(45 * i, Vector3.forward) * new Vector3(100, 0, 0));
+        }
+    }
 }

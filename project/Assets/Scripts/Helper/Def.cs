@@ -50,7 +50,7 @@ public static class Def
     //     },
     // };
 
-    static public readonly float WeaponPlayerDistance = 0.7f;
+    static public readonly float WeaponPlayerDistance = 1f;
     static public readonly Vector2Int TileSize = new Vector2Int(5, 5);
     static public readonly int TileSizeNum = TileSize.x * TileSize.y;
     static public readonly Vector2[] WeaponLocationVec2 = new Vector2[4]{
@@ -64,4 +64,6 @@ public static class Def
     static public readonly float[] WeaponLocationRadian = new float[4]{
        Mathf.PI / 2, 0, Mathf.PI * 3 / 2, Mathf.PI
     };
+
+    static public Vector3 GetDirection(float angle, float length) { return Quaternion.AngleAxis(angle, Vector3.forward) * new Vector3(length, 0, 0); }
 }
