@@ -19,16 +19,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (WeaponManager.Instance.IsRotateable())
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                WeaponManager.Instance.Rotate(RotateDirection.Counterclockwise);
-            }
-            else if (Input.GetKeyDown(KeyCode.D))
-            {
-                WeaponManager.Instance.Rotate(RotateDirection.Clockwise);
-            }
-        }
+
     }
 }

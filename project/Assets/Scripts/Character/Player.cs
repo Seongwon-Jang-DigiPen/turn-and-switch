@@ -8,6 +8,8 @@ public class Player : CharacterBase
   public static Player Instance { get { return _instance; } }
   private float _power;
   public float Power { get { return _power; } set { Power = _power; } }
+  public float Speed = 5;
+  private Vector2 _moveDirection;
 
   private void Start()
   {
@@ -19,5 +21,16 @@ public class Player : CharacterBase
 
   }
 
+  private void Update()
+  {
+    TempMove();
+    Vector3 moveDir = _moveDirection;
+    transform.position += moveDir * Speed * Time.deltaTime;
+  }
+
+  void TempMove()
+  {
+    _moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+  }
 }
 
