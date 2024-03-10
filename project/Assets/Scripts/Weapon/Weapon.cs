@@ -38,7 +38,7 @@ public class Weapon : MonoBehaviour
     public void Throw(float angularVelocity, float distance, Vector3 dir)
     {
         //GetComponent<Rigidbody2D>().AddForce(dir * power, ForceMode2D.Impulse);
-        GetComponent<Rigidbody2D>().velocity = dir * angularVelocity * distance;
+        GetComponent<Rigidbody2D>().velocity = dir * MathF.Abs(angularVelocity) * distance;
         GetComponent<Rigidbody2D>().AddTorque(angularVelocity, ForceMode2D.Impulse);
     }
 }

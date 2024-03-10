@@ -15,7 +15,7 @@ public class HPBar : MonoBehaviour
         {
             string h = (_hpBar == null) ? "null" : _hpBar.name;
             string c = (_character == null) ? "null" : _character.name;
-            Debug.Log($" HPBar Error -- hp Bar : {h} | character : {_character}");
+            Debug.Log($" HPBar Error -- hp Bar : {h} | character : {c}");
             return;
         }
         _hpBarXSize = _hpBar.size.x;

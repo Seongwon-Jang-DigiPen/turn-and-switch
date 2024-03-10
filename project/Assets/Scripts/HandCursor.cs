@@ -17,15 +17,15 @@ public class HandCursor : MonoBehaviour
     }
     void Update()
     {
-        Vector2 mousePos = Input.mousePosition;
-        Vector2 deltaMousePos = mousePos - prevMousePos;
-        pos += deltaMousePos / 100f;
+        // Vector2 mousePos = Input.mousePosition;
+        //Vector2 deltaMousePos = mousePos - prevMousePos;
+        //pos += deltaMousePos / 100f;
 
-        if (pos.sqrMagnitude > 1) { pos.Normalize(); }
+        //if (pos.sqrMagnitude > 1) { pos.Normalize(); }
 
 
-
-        prevMousePos = mousePos;
+        pos = Player.Instance.Control.CursorDir;
+       // prevMousePos = mousePos;
     }
 
     public float GetDirection()

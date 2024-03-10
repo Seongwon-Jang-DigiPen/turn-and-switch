@@ -18,7 +18,7 @@ public class Hand : MonoBehaviour
     public float throwPower = 10;
     private void Update()
     {
-        isMousePressed = Input.GetMouseButton(0);
+        isMousePressed = Player.Instance.Control.Grab;
         if (weapon != null && isMousePressed == true)
         {
             GrabWeaponUpdate();
@@ -54,15 +54,7 @@ public class Hand : MonoBehaviour
 
         void UnGrabWeaponUpdate()
         {
-            Vector3 cursor = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            cursor.z = 0;
-            transform.localPosition = (cursor - transform.parent.position).normalized * playerHandDistance;
-        }
-
-        // 마우스 버튼이 떼졌을 때
-        if (Input.GetMouseButtonUp(0))
-        {
-            isMousePressed = false;
+            transform.localPosition = Player.Instance.Control.CursorDir;
         }
     }
 
@@ -79,13 +71,15 @@ public class Hand : MonoBehaviour
     void ThrowWeapon()
     {
         float currAngle = Mathf.Rad2Deg * Mathf.Atan2(transform.localPosition.y, transform.localPosition.x);
+        Vector3 angle = Quaternion.AngleAxis(currAngle + (FindAnyObjectByType<HandCursor>().GetDirection() + ((_rotateVelocity > 0) ? 90 : -90)), Vector3.forward) * Vector3.right;
 
         weapon.Throw(_rotateVelocity * Mathf.Deg2Rad,
         playerHandDistance,
-        Quaternion.AngleAxis(currAngle + FindAnyObjectByType<HandCursor>().GetDirection() * ((_rotateVelocity > 0) ? 90 : -90), Vector3.forward) * Vector3.right);
+        angle);
         weapon.owner = null;
         weapon = null;
         hovering = null;
+        _rotateVelocity = 0;
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -102,5 +96,12 @@ public class Hand : MonoBehaviour
         {
             hovering = null;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        float currAngle = Mathf.Rad2Deg * Mathf.Atan2(transform.localPosition.y, transform.localPosition.x);
+        Vector3 angle = Quaternion.AngleAxis(currAngle + (FindAnyObjectByType<HandCursor>().GetDirection() + ((_rotateVelocity > 0) ? 90 : -90)), Vector3.forward) * Vector3.right;
+        Gizmos.DrawLine(transform.position, angle * 5 + transform.position);
     }
 }

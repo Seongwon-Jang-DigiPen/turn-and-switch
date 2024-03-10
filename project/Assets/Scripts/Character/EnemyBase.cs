@@ -32,7 +32,6 @@ public class EnemyBase : CharacterBase
   {
     base.Hitted(damage);
     _isDead = true;
-
     Vector3 toMonsterVector = transform.position - Player.Instance.transform.position;
     _rb.AddForce(toMonsterVector.normalized * 10, ForceMode2D.Impulse);
     Destroy(this.gameObject, 2);
